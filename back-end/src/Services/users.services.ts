@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { forbiddenError, notFoundError } from "../Middlewares/errorHandler.js";
+import { conflictError, forbiddenError, notFoundError } from "../Middlewares/errorHandler.js";
 import Cryptr from "cryptr";
 import { usersRepository } from "../Repositories/users.repository.js";
 import { createUser } from "../Interfaces/users.interface.js";
@@ -22,7 +22,7 @@ async function signUpService(newUser: createUser) {
   const { username, password } = newUser;
 
   const userFound = await usersRepository.findByUsername(username);
-  if (userFound) throw notFoundError("username not available");
+  if (userFound) throw conflictError("username not available");
 
   const createUser = await usersRepository.createUser({
     username,

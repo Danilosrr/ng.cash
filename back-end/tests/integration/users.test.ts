@@ -1,25 +1,69 @@
 import supertest from "supertest";
 import app from "../../src/app.js";
 import { prisma } from "../../src/Config/database.js";
+import { userFactory } from "../factories/users.factory.js";
 
 const agent = supertest(app);
 
-describe("integration test", () => {
-  beforeEach(async () => {
-    await prisma.users.deleteMany();
-  });
+beforeEach(async () => {
+  await prisma.transactions.deleteMany();
+  await prisma.users.deleteMany();
+  await prisma.accounts.deleteMany();
+});
 
-  it("should register user", async () => {
-    const user = { username: "Danilo", password: "Senha123" };
+describe("/signup", () => {
+  const user = userFactory.validUser();
 
-    const { status } = await agent.post("/signUp").send(user);
-    expect(status).toBe(201);
+  it("expect successful sign up", async () => {
+    const request = await agent.post("/signup").send(user);
+    expect(request.status).toBe(201);
 
     const savedUser = await prisma.users.findUnique({
       where: {
-        username: "Danilo",
+        username: user.username,
       },
     });
     expect(savedUser).not.toBeNull();
+  });
+
+  it("unavailabe username > expect conflict error", async () => {
+    const request = await agent.post("/signup").send(user);
+    expect(request.status).toBe(201);
+
+    const { status } = await agent.post("/signup").send(user);
+    expect(status).toBe(409);
+  });
+});
+
+describe("/signin", () => {
+  it("expect sucessful sign in", async () => {
+    const user = userFactory.validUser();
+    await userFactory.createNewUser(user);
+
+    const request = await agent.post("/signin").send(user);
+    expect(request.status).toBe(200);
+    expect(request.body.token).not.toBeNull();
+  });
+
+  it("password mismatch > expect forbiden error", async () => {
+    const user = userFactory.validUser();
+    await userFactory.createNewUser(user);
+
+    const request = await agent.post("/signin").send({
+      ...user,
+      password: userFactory.validPassword(),
+    });
+    expect(request.status).toBe(403);
+  });
+
+  it("username mismatch > expect not found error", async () => {
+    const user = userFactory.validUser();
+    await userFactory.createNewUser(user);
+
+    const request = await agent.post("/signin").send({
+      ...user,
+      username: userFactory.validUsername(),
+    });
+    expect(request.status).toBe(404);
   });
 });

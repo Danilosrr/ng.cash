@@ -4,8 +4,7 @@ import Cryptr from "cryptr";
 import { usersRepository } from "../Repositories/users.repository.js";
 import { createUser } from "../Interfaces/users.interface.js";
 
-const cryptrKey = process.env.CRYPTR_KEY || "cryptr";
-const cryptr = new Cryptr(cryptrKey);
+const cryptr = new Cryptr(process.env.CRYPTR_KEY);
 
 function encrypt(password: string) {
   const encryptedPassword = cryptr.encrypt(password);

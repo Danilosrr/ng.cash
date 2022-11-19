@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker";
+import jwt from "jsonwebtoken";
 import Cryptr from "cryptr";
 import { prisma } from "../../src/Config/database";
 import { createUser } from "../../src/Interfaces/users.interface";
@@ -61,6 +62,16 @@ function createTransaction(receiver: string) {
   };
 }
 
+async function getToken(user: createUser) {
+  await createNewUser(user);
+  const { id, username } = await userFactory.findUser(user.username);
+
+  const token = jwt.sign({ id, username }, process.env.JWT_KEY, {
+    expiresIn: "24h",
+  });
+  return token;
+}
+
 async function clearDatabase() {
   await prisma.transactions.deleteMany();
   await prisma.users.deleteMany();
@@ -74,5 +85,6 @@ export const userFactory = {
   validPassword,
   createNewUser,
   createTransaction,
+  getToken,
   clearDatabase,
 };

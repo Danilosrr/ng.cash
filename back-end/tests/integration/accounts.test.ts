@@ -1,19 +1,22 @@
 import supertest from "supertest";
 import app from "../../src/app.js";
-import { accountFactory } from "../factories/accounts.factory.js";
 import { userFactory } from "../factories/users.factory.js";
 
 const agent = supertest(app);
 
 beforeEach(async () => {
-  await accountFactory.clearDatabase();
+  await userFactory.clearDatabase();
+});
+
+afterAll(async () => {
+  await userFactory.clearDatabase();
 });
 
 describe("/balance", () => {
   const user = userFactory.validUser();
 
   it("expect to successfully get account balance", async () => {
-    const token = await accountFactory.getToken(user);
+    const token = await userFactory.getToken(user);
 
     const request = await agent
       .get("/balance")
@@ -28,7 +31,7 @@ describe("/extract", () => {
   const user2 = userFactory.validUser();
 
   it("expect to sucessfully get extract", async () => {
-    const token = await accountFactory.getToken(user1);
+    const token = await userFactory.getToken(user1);
 
     const request = await agent
       .get("/extract")
@@ -37,9 +40,9 @@ describe("/extract", () => {
     expect(request.body.length).toEqual(0);
   });
 
-  it("expect to sucessfully get filtered extract", async () => {
-    const token = await accountFactory.getToken(user1);
-    await accountFactory.getToken(user2);
+  it("date filter & type filter > expect to successfuly filter extract", async () => {
+    const token = await userFactory.getToken(user1);
+    await userFactory.getToken(user2);
 
     const date = new Date().toISOString().split("T")[0]; // yyyy-mm-dd
 

@@ -1,14 +1,15 @@
 import supertest from "supertest";
 import app from "../../src/app.js";
-import { prisma } from "../../src/Config/database.js";
 import { userFactory } from "../factories/users.factory.js";
 
 const agent = supertest(app);
 
 beforeEach(async () => {
-  await prisma.transactions.deleteMany();
-  await prisma.users.deleteMany();
-  await prisma.accounts.deleteMany();
+  await userFactory.clearDatabase();
+});
+
+afterAll(async () => {
+  await userFactory.clearDatabase();
 });
 
 describe("/signup", () => {
@@ -18,11 +19,7 @@ describe("/signup", () => {
     const request = await agent.post("/signup").send(user);
     expect(request.status).toBe(201);
 
-    const savedUser = await prisma.users.findUnique({
-      where: {
-        username: user.username,
-      },
-    });
+    const savedUser = await userFactory.findUser(user.username);
     expect(savedUser).not.toBeNull();
   });
 

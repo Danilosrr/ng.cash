@@ -9,16 +9,30 @@ beforeEach(async () => {
   await accountFactory.clearDatabase();
 });
 
+describe("/balance", () => {
+  const user = userFactory.validUser();
+
+  it("expect to successfully get account balance", async () => {
+    const token = await accountFactory.getToken(user);
+
+    const request = await agent
+      .get("/balance")
+      .set("Authorization", `Bearer ${token}`);
+    expect(request.status).toBe(200);
+    expect(request.body.balance).toEqual(100);
+  });
+});
+
 describe("/extract", () => {
   const user1 = userFactory.validUser();
   const user2 = userFactory.validUser();
 
   it("expect to sucessfully get extract", async () => {
-    const userToken = await accountFactory.getToken(user1);
+    const token = await accountFactory.getToken(user1);
 
     const request = await agent
       .get("/extract")
-      .set("Authorization", `Bearer ${userToken}`);
+      .set("Authorization", `Bearer ${token}`);
     expect(request.status).toBe(200);
     expect(request.body.length).toEqual(0);
   });

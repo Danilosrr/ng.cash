@@ -6,8 +6,11 @@ export const userSchema = joi.object<createUser>({
   password: joi
     .string()
     .min(8)
-    .regex(/[A-Z]/, "upper-case")
-    .regex(/[a-z]/, "lower-case")
-    .regex(/[0-9]/, "number")
-    .required(),
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)
+    .required()
+    .error(
+      new Error(
+        "password must contain upper and lower case letters and at least one number!"
+      )
+    ),
 });

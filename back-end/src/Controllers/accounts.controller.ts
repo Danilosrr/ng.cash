@@ -19,14 +19,14 @@ export async function extract(req: Request, res: Response) {
 
   let extract = await accountsServices.accountExtract(token.username);
 
-  if (dateFilter) {
+  if (!!dateFilter) {
     extract = accountsServices.filterDate({
       extract,
       dateFilter: String(dateFilter),
     });
   }
 
-  if (typeFilter) {
+  if (!!typeFilter) {
     extract = await accountsServices.filterType({
       extract,
       typeFilter: String(typeFilter) as transactionType,

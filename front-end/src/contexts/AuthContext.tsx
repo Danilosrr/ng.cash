@@ -12,7 +12,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const LOCAL_STORAGE_KEY = "repoprovas-token";
+const LOCAL_STORAGE_KEY = "ng.cash-token";
 const persistedToken = localStorage.getItem(LOCAL_STORAGE_KEY);
 
 export function AuthProvider({ children }: Props) {

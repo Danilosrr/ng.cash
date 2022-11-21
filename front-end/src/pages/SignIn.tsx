@@ -13,6 +13,7 @@ import PasswordInput from "../components/PasswordInput";
 import useAlert from "../hooks/useAlert";
 import useAuth from "../hooks/useAuth";
 import api from "../services/api";
+import logo from "../assets/images/logo-ngcash-branco.svg";
 
 const styles = {
   container: {
@@ -84,7 +85,7 @@ function SignIn() {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <img src={'https://ng.cash/_nuxt/img/logo-ngcash-branco.88c5860.svg'} alt='ng.cash logo' style={{maxWidth:'150px'}}/>
+      <img src={logo} alt='ng.cash logo' style={{maxWidth:'150px'}}/>
       <Box sx={styles.container}>
         <Box sx={{ height: "50px"}}/>
         <TextField

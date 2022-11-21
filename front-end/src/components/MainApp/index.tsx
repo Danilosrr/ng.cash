@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import logo from "../../assets/images/logo-ngcash-branco.svg";
 
 export function MainApp() {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ export function MainApp() {
           padding: "10px 25px",
         }}
       >
-        <img src={'https://ng.cash/_nuxt/img/logo-ngcash-branco.88c5860.svg'} alt="ng.cash logo" style={{width:'50px'}}/>
+        <img src={logo} alt="ng.cash logo" style={{width:'50px'}}/>
         <LogoutIcon style={{ cursor: "pointer", color:'#fff' }} onClick={handleSignOut} />
       </Box>
       <Outlet />
